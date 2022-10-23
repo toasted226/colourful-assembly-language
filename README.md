@@ -200,6 +200,7 @@ The following is a zoomed-in version of the image to be able to see it. The orig
 
 ![Zoomed-in Image of written program](https://github.com/toasted226/colourful-assembly-language/blob/master/example/zoomedincode.png) 
 <br>Original image:<br>
+
 ![Original 32x32 image](https://github.com/toasted226/colourful-assembly-language/blob/master/example/code.png)
 
 ### Written code
