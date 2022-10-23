@@ -196,10 +196,11 @@ _xxxx is a placeholder for a compiler-generated UUID_
 The following is a simple Hello World program written (drawn) in CASSEL.
 
 ### Drawn image
-The following is a zoomed-in version of the image to be able to see it. The original is a 32x32 pixel image. The size of the image is unimportant when writing a normal program in CASSEL, the colours of individual pixels and their order is all that matters.
+The following is a zoomed-in version of the image to be able to see it. The original is a 32x32 pixel image. The actual code is made up of the oddly coloured pixels in the ears. The rest of the pixels that are considered unimportant, have an Alpha value of FE (= 254). Enough to let the compiler know to ignore those pixels, and also to make the difference in opacity unnoticable to the viewer. The size of the image is unimportant when writing a normal program in CASSEL, the colours of individual pixels and their order is all that matters.
 
-![Zoomed-in Image of written program](https://github.com/toasted226/colourful-assembly-language/blob/master/example/zoomedincode.png) 
-<br>Original image:<br>
+![Zoomed-in Image of written program](https://github.com/toasted226/colourful-assembly-language/blob/master/example/zoomedincode.png)
+
+Original image:
 
 ![Original 32x32 image](https://github.com/toasted226/colourful-assembly-language/blob/master/example/code.png)
 
