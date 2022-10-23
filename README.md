@@ -282,4 +282,4 @@ Hello, world!
 
 ---
 
-<span style="font-size:0.7em;">*As the amount of variable addresses is finite, CASSEL is technically not Turing-Complete. However, there are over 16 million available variable addresses available to be used. While not every problem could theoretically be solved with such a limitation, you could solve a good number. Also, this language is not meant to be taken seriously.</span>
+<span style="font-size:0.7em;">*As the amount of variable addresses is finite, CASSEL is technically not Turing-Complete. However, there are over 16 million variable addresses available to be used. While not every problem could theoretically be solved with such a limitation, you could solve a good number. Also, this language is not meant to be taken seriously.</span>
