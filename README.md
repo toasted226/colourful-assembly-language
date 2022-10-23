@@ -198,7 +198,8 @@ The following is a simple Hello World program written (drawn) in CASSEL.
 ### Drawn image
 The following is a zoomed-in version of the image to be able to see it. The original is a 32x32 pixel image. The size of the image is unimportant when writing a normal program in CASSEL, the colours of individual pixels and their order is all that matters.
 
-![Zoomed-in Image of written program](https://github.com/toasted226/colourful-assembly-language/blob/master/example/zoomedincode.png) <br>
+![Zoomed-in Image of written program](https://github.com/toasted226/colourful-assembly-language/blob/master/example/zoomedincode.png) 
+<br>Original image:<br>
 ![Original 32x32 image](https://github.com/toasted226/colourful-assembly-language/blob/master/example/code.png)
 
 ### Written code
