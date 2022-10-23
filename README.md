@@ -191,3 +191,92 @@ for (int v_xxxx = 0; v_xxxx < v_1; v_xxxx++)
 }
 ```
 _xxxx is a placeholder for a compiler-generated UUID_
+
+## Example
+The following is a simple Hello World program written (drawn) in CASSEL.
+
+### Drawn image
+The following is a zoomed-in version of the image to be able to see it. The original is a 32x32 pixel image. The size of the image is unimportant when writing a normal program in CASSEL, the colours of individual pixels and their order is all that matters.
+
+![Zoomed-in Image of written program](https://github.com/toasted226/colourful-assembly-language/blob/master/example/zoomedincode.png)
+![Original 32x32 image](https://github.com/toasted226/colourful-assembly-language/blob/master/example/code.png)
+
+### Written code
+The following is the CASSEL code represented as individual colour codes in regular text.
+
+```CASSEL
+#FF0048
+#C00000
+#FF0165
+#C00100
+#FA0107
+#FF0A02
+#FE0A00
+#C00100
+#CE0000
+#FF026F
+#C00200
+#FF032C
+#C00300
+#FF0420
+#C00400
+#FF0577
+#C00500
+#C00200
+#FF0672
+#C00600
+#C00100
+#FF0764
+#C00700
+#FF0821
+#C00800
+```
+
+The following is the generated C++ code after the code in the image is transpiled.
+
+```cpp
+#include<iostream>
+int main()
+{
+	int v_0 = 72;
+	std::cout << char(v_0);
+	int v_1 = 101;
+	std::cout << char(v_1);
+	v_1 += 7;
+	int v_10 = 2;
+	for (int v_xxxx = 0; v_xxxx < v_10; v_xxxx++)
+	{
+		std::cout << char(v_1);
+	}
+	int v_2 = 111;
+	std::cout << char(v_2);
+	int v_3 = 44;
+	std::cout << char(v_3);
+	int v_4 = 32;
+	std::cout << char(v_4);
+	int v_5 = 119;
+	std::cout << char(v_5);
+	std::cout << char(v_2);
+	int v_6 = 114;
+	std::cout << char(v_6);
+	std::cout << char(v_1);
+	int v_7 = 100;
+	std::cout << char(v_7);
+	int v_8 = 33;
+	std::cout << char(v_8);
+
+	return 0;
+}
+```
+_xxxx is a placeholder for a compiler-generated UUID_
+
+### Output
+Upon compiling and running the generated C++ code, the following output is received.
+
+```output
+Hello, world!
+```
+
+---
+
+<span style="font-size:0.7em;">*As the amount of variable addresses is finite, CASSEL is technically not Turing-Complete. However, there are over 16 million available variable addresses available to be used. While not every problem could theoretically be solved with such a limitation, you could solve a good number. Also, this language is not meant to be taken seriously.</span>
