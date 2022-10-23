@@ -7,6 +7,7 @@ namespace ColourfulAssembly
         public List<Colour> commands { get; set; }
 
         private const string code_InNext = "CC";
+        private string indent = "    ";
         private int currentCommand;
         private string? compiledCode;
 
@@ -31,7 +32,7 @@ namespace ColourfulAssembly
                 $"int main()\n" +
                 "{\n" +
                 $"{compiledCode}\n" +
-                $"return 0;\n" +
+                $"    return 0;\n" +
                 "}";
 
             return code;
@@ -135,7 +136,7 @@ namespace ColourfulAssembly
 
             //eg.
             //int v = 5;
-            string line = $"int v_{vals[0]} = {vals[1]};\n";
+            string line = $"{indent}int v_{vals[0]} = {vals[1]};\n";
             compiledCode += line;
         }
 
@@ -145,7 +146,7 @@ namespace ColourfulAssembly
 
             //eg.
             //v += 5;
-            string line = $"v_{vals[0]} += {vals[1]};\n";
+            string line = $"{indent}v_{vals[0]} += {vals[1]};\n";
             compiledCode += line;
         }
 
@@ -155,7 +156,7 @@ namespace ColourfulAssembly
 
             //eg.
             //v -= 5;
-            string line = $"v_{vals[0]} -= {vals[1]};\n";
+            string line = $"{indent}v_{vals[0]} -= {vals[1]};\n";
             compiledCode += line;
         }
 
@@ -165,7 +166,7 @@ namespace ColourfulAssembly
 
             //eg.
             //std::cout << v;
-            string line = $"std::cout << char(v_{vals[0]});\n";
+            string line = $"{indent}std::cout << char(v_{vals[0]});\n";
             compiledCode += line;
         }
 
@@ -179,9 +180,9 @@ namespace ColourfulAssembly
             //std::cin.get(c);
             //v = int(c);
             string uuid = GetUniqueVarName();
-            string line = "char v_" + uuid + "{};" +
-                "\nstd::cin.get(v_" + uuid + $");" +
-                $"\nv_{vals[0]} = int(v_{uuid});\n";
+            string line = indent + "char v_" + uuid + "{};" +
+                "\n" + indent + "std::cin.get(v_" + uuid + $");" +
+                $"\n{indent}v_{vals[0]} = int(v_{uuid});\n";
             compiledCode += line;
         }
 
@@ -193,15 +194,21 @@ namespace ColourfulAssembly
             //for (int i = 0; i < g; i++)
             //{
             string uuid = GetUniqueVarName();
-            string line = $"for (int v_{uuid} = 0; v_{uuid} < v_{vals[0]}; v_{uuid}++)\n{{\n";
+            string line = $"{indent}for (int v_{uuid} = 0; v_{uuid} < v_{vals[0]}; v_{uuid}++)\n{indent}{{\n";
             compiledCode += line;
+
+            //add indent
+            indent += "    ";
         }
 
         public void ScopeClose(Colour command)
         {
+            //remove indent
+            indent = indent.Substring(indent.Length - 4);
+
             //eg.
             //}
-            string line = "}\n";
+            string line = indent + "}\n";
             compiledCode += line;
         }
     }
