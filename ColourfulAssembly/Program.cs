@@ -6,7 +6,7 @@
         {
             Console.Write("Enter script file path: ");
 
-            string? filePath = Console.ReadLine();
+            string? filePath = /*Console.ReadLine()*/"C:\\Users\\Keagan\\Desktop\\scripts\\stringtest.png";
 
             if (File.Exists(filePath))
             {
@@ -15,7 +15,11 @@
                 commands.ToList().ForEach((c) => Console.WriteLine(c.colour));
                 Compiler comp = new Compiler(commands);
                 string code = comp.Compile();
-                Console.WriteLine("\nTranspiled C++ Code:\n\n" + code);
+                Console.WriteLine("\n############################\n");
+                Console.WriteLine("Transpiled C++ Code:\n");
+                Console.WriteLine("############################\n");
+                Console.WriteLine(code);
+                Console.WriteLine("\n############################\n");
             }
             else 
             {

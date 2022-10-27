@@ -19,7 +19,7 @@ namespace ColourfulAssembly
                 fixedColour = colour[1..];
             }
 
-            if (fixedColour.Length != 6) Console.WriteLine($"ERROR: '{colour}' is not a valid colour.");
+            //if (fixedColour.Length != 6) Console.WriteLine($"Warning: {colour} is not a valid colour. Ignoring.");
 
             this.colour = fixedColour;
         }

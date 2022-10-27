@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ColourfulAssembly
 {
@@ -16,14 +18,30 @@ namespace ColourfulAssembly
             this.commands = commands.ToList();
         }
 
-        //returns a string of C++ code of the compiled (transpiled) program
+        /// <summary>
+        /// Returns a string of C++ code of the compiled (transpiled) program
+        /// </summary>
+        /// <returns></returns>
         public string Compile() 
         {
+            //preprocess common string pattern commands for optimisation
+            Console.WriteLine("\nPreprocessing commands...");
+            string[] strComs = PreprocessCommands();
+            Console.WriteLine("\nPreprocessed commands: ");
+            for (int i = 0; i < strComs.Length; i++) 
+            {
+                Console.WriteLine(strComs[i]);
+            }
+
             //loop through each command and process them
-            for (int i = 0; i < commands.Count; i++) 
+            for (int i = 0; i < strComs.Length; i++) 
             {
                 currentCommand = i;
-                CheckRegister(commands[i], out _);
+                bool isRegister = CheckRegister(new Colour(strComs[i]), out _);
+                if (!isRegister) 
+                {
+                    compiledCode += strComs[i];
+                }
             }
 
             //boilerplate C++ code plus given compiled code
@@ -34,6 +52,218 @@ namespace ColourfulAssembly
                 $"{compiledCode}\n" +
                 $"    return 0;\n" +
                 "}";
+
+            return code;
+        }
+
+        /// <summary>
+        /// Returns a list of strings containing pre-generated string code along with the rest of the commands.
+        /// Looks for commands in a pattern of nFF, nC0; n > 1 where n is the number of given registers used.
+        /// Pattern example: FF FF C0 C0
+        /// </summary>
+        private string[] PreprocessCommands()
+        {
+            string prevReg = "";
+
+            int assignsFound = 0;
+            int printsFound = 0;
+            List<Colour> APPairs = new();
+
+            //commands in string form, those that are part of a string will be removed
+            List<string> strCommands = new();
+
+            for (int i = 0; i < commands.Count; i++) 
+            {
+                CheckRegister(commands[i], out string reg, false);
+                strCommands.Add(commands[i].colour);
+
+                if (reg == "FF") //assign register
+                {
+                    //not found prints, add this assign
+                    if (printsFound == 0)
+                    {
+                        //add assign to pair
+                        APPairs.Add(commands[i]);
+                        assignsFound++;
+                    }
+                    else if (printsFound < 2) //found pair either doesn't exist or isn't valid
+                    {
+                        //clear current pair info
+                        assignsFound = 0;
+                        printsFound = 0;
+                        APPairs.Clear();
+                    }
+                    else //found valid pair, process pair for string
+                    {
+                        bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
+                        if (hasString)
+                        {
+                            strCommands.Insert(startingIndex, code);
+                            strCommands.RemoveRange(startingIndex + 1, matches);
+
+                            Console.WriteLine("Found paired assignment and print registers:");
+                            APPairs.ForEach((i) => Console.WriteLine(i.colour));
+                            Console.WriteLine("Found matching variable addresses." +
+                                "\nOptimised string code:\n" + code);
+                        }
+                    }
+                }
+                else if (reg == "C0") //print register
+                {
+                    //enough assigns found to potentially make up a pair
+                    if (prevReg == "FF" && assignsFound > 1)
+                    {
+                        APPairs.Add(commands[i]);
+                        printsFound++;
+                    }
+                    else if (printsFound > 0) //if a print has already been found, add this
+                    {
+                        APPairs.Add(commands[i]);
+                        printsFound++;
+                    }
+                    else //this is a random print
+                    {
+                        //clear current pair info
+                        assignsFound = 0;
+                        printsFound = 0;
+                        APPairs.Clear();
+                    }
+                }
+                else //different unrelated register
+                {
+                    if (printsFound > 1) //found valid pair, process pair for string
+                    {
+                        bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
+                        if (hasString)
+                        {
+                            strCommands.Insert(startingIndex, code);
+                            strCommands.RemoveRange(startingIndex + 1, matches);
+
+                            Console.WriteLine("Found paired assignment and print registers:");
+                            APPairs.ForEach((i) => Console.WriteLine(i.colour));
+                            Console.WriteLine("Found matching variable addresses." +
+                                "\nOptimised string code:\n" + code);
+                        }
+                    }
+                    else //no pair found, random register
+                    {
+                        //clear current pair info
+                        assignsFound = 0;
+                        printsFound = 0;
+                        APPairs.Clear();
+                    }
+                }
+
+                prevReg = reg;
+            }
+
+            return strCommands.ToArray();
+        }
+
+        private bool TryParseAPPair(List<Colour> APPairs, out string code, out int startIndex, out int length)
+        {
+            startIndex = 0;
+            length = 0;
+            int matches = 0;
+            bool stringFound = false;
+            List<Colour> stringCommands = new();
+
+            List<(Colour, bool)> assigns = new();
+            List<(Colour, bool)> prints = new();
+
+            List<Colour> sA = new();
+            List<Colour> sP = new();
+
+            code = "";
+
+            foreach (var col in APPairs) 
+            {
+                if (col.R() == "FF")
+                {
+                    assigns.Add((col, false));
+                }
+                else 
+                {
+                    prints.Add((col, false));
+                }
+            }
+
+            for (int i = 0; i < assigns.Count; i++) 
+            {
+                for (int j = 0; j < prints.Count; j++) 
+                {
+                    if (assigns[i].Item1.GreenValue() == prints[j].Item1.GreenValue())
+                    {
+                        if (!stringFound) startIndex = i;
+                        stringFound = true;
+                        matches++;
+                        assigns[i] = (assigns[i].Item1, true);
+                        prints[j] = (prints[j].Item1, true);
+
+                        sA.Add(assigns[i].Item1);
+                        sP.Add(prints[j].Item1);
+
+                        if (i == assigns.Count - 1 || j == prints.Count) 
+                        {
+                            //string found!
+                            List<Colour> cols = new();
+                            sA.ForEach((i) => cols.Add(i));
+                            sP.ForEach((i) => cols.Add(i));
+                            length = cols.Count;
+
+                            code = GetStringCode(cols);
+                        }
+                    }
+                    else if (matches > 1)
+                    {
+                        //string found!
+                        List<Colour> cols = new();
+                        sA.ForEach((i) => cols.Add(i));
+                        sP.ForEach((i) => cols.Add(i));
+                        length = cols.Count;
+
+                        code = GetStringCode(cols);
+                    }
+                    else 
+                    {
+                        if (!assigns[i].Item2 && !prints[j].Item2)
+                        {
+                            //not part of a string
+                            stringFound = false;
+                            startIndex = 0;
+                            matches = 0;
+
+                            sA.Clear();
+                            sP.Clear();
+                        }
+                    }
+                }
+            }
+
+            return stringFound;
+        }
+
+        private string GetStringCode(List<Colour> cols)
+        {
+            List<char> chars = new();
+            string varName = GetUniqueVarName();
+
+            for (int i = 0; i < cols.Count; i++) 
+            {
+                Console.WriteLine(cols[i].colour);
+                if (cols[i].R() == "FF")
+                {
+                    chars.Add(Convert.ToChar(cols[i].BlueValue()));
+                }
+                else 
+                {
+                    break;
+                }
+            }
+            string charsString = new string(chars.ToArray());
+
+            string code = $"{indent}std::string v_{varName} = \"{charsString}\";" +
+                $"\n{indent}std::cout << v_{varName};\n";
 
             return code;
         }
