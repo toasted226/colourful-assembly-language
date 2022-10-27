@@ -193,7 +193,7 @@ for (int v_xxxx = 0; v_xxxx < v_1; v_xxxx++)
 _xxxx is a placeholder for a compiler-generated UUID_
 
 ## Example
-The following is a simple Hello World program written (drawn) in CASSEL.
+The following is a simple Hello World program written (drawn) in CASSEL. This program does not feature string optimisation and is intended for demonstration purposes.
 
 ### Drawn image
 The following is a zoomed-in version of the image to be able to see it. The original is a 32x32 pixel image. The actual code is made up of the oddly coloured pixels in the ears. The rest of the pixels that are considered unimportant, have an Alpha value of FE (= 254). Enough to let the compiler know to ignore those pixels, and also to make the difference in opacity unnoticable to the viewer. The size of the image is unimportant when writing a normal program in CASSEL, the colours of individual pixels and their order is all that matters.
@@ -280,6 +280,34 @@ Upon compiling and running the generated C++ code, the following output is recei
 Hello, world!
 ```
 
+## Optimisation
+This section will cover the preprocessing step in the compilation process. This information will help you write CASSEL code that generates cleaner and more efficient C++ code.
+
+### String Optimisation
+CASSEL has a string optimisation feature in which assignment registers followed by output registers that have consecutive matching variable addresses instead generate a string variable in C++. This is to avoid repeatedly creating int variables and printing out their char conversions.
+
+For this to work, there must be at least 2 assignment registers followed by corresponding output registers. You can still have unrelated assignment or output registers before or after these string-optimised sections, they will be safely ignored as regular registers.
+
+Example:
+In the following example, you can see that there are 3 assignments followed by 3 outputs, each variable address in the assignment registers corresponding to addresses in the output registers. Refer to the [documentation](##Documentation) for more information on how the assignment and output registers work.
+
+CASSEL (HTML Colour Code Translation)
+```CASSEL
+#FF0048
+#FF0169
+#FF0221
+#C00000
+#C00100
+#C00200
+```
+C++ (Generated)
+```cpp
+std::string v_xxxx = "Hi!";
+std::cout << v_xxxx;
+```
+_xxxx is a placeholder for a compiler-generated UUID_
+
 ---
 
 <span style="font-size:0.7em;">*As the amount of variable addresses is finite, CASSEL is technically not Turing-Complete. However, there are over 16 million variable addresses available to be used. While not every problem could theoretically be solved with such a limitation, you could solve a good number. Also, this language is not meant to be taken seriously.</span>
+
