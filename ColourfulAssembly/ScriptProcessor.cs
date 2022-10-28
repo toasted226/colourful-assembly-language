@@ -17,6 +17,13 @@ namespace ColourfulAssembly
             this.filePath = filePath;
         }
 
+        public List<Colour> ProcessScriptAsText() 
+        {
+            List<Colour> colours = new();
+            File.ReadAllLines(filePath).ToList().ForEach((s) => colours.Add(new Colour(s[1..])));
+            return colours;
+        }
+
         public List<Colour> ProcessScript() 
         {
             List<Colour> colours = new();

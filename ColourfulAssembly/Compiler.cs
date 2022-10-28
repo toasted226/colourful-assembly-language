@@ -98,8 +98,14 @@ namespace ColourfulAssembly
                         bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
                         if (hasString)
                         {
+                            Console.WriteLine("yeet");
                             strCommands.Insert(startingIndex, code);
                             strCommands.RemoveRange(startingIndex + 1, matches);
+
+                            //clear current pair info
+                            assignsFound = 0;
+                            printsFound = 0;
+                            APPairs.Clear();
 
                             Console.WriteLine("Found paired assignment and print registers:");
                             APPairs.ForEach((i) => Console.WriteLine(i.colour));
@@ -128,6 +134,26 @@ namespace ColourfulAssembly
                         printsFound = 0;
                         APPairs.Clear();
                     }
+
+                    if (i == commands.Count - 1 && printsFound > 1)
+                    {
+                        bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
+                        if (hasString)
+                        {
+                            strCommands.Insert(startingIndex, code);
+                            strCommands.RemoveRange(startingIndex + 1, matches);
+
+                            //clear current pair info
+                            assignsFound = 0;
+                            printsFound = 0;
+                            APPairs.Clear();
+
+                            Console.WriteLine("Found paired assignment and print registers:");
+                            APPairs.ForEach((i) => Console.WriteLine(i.colour));
+                            Console.WriteLine("Found matching variable addresses." +
+                                "\nOptimised string code:\n" + code);
+                        }
+                    }
                 }
                 else //different unrelated register
                 {
@@ -138,6 +164,11 @@ namespace ColourfulAssembly
                         {
                             strCommands.Insert(startingIndex, code);
                             strCommands.RemoveRange(startingIndex + 1, matches);
+
+                            //clear current pair info
+                            assignsFound = 0;
+                            printsFound = 0;
+                            APPairs.Clear();
 
                             Console.WriteLine("Found paired assignment and print registers:");
                             APPairs.ForEach((i) => Console.WriteLine(i.colour));

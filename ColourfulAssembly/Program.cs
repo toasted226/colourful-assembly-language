@@ -6,12 +6,22 @@
         {
             Console.Write("Enter script file path: ");
 
-            string? filePath = /*Console.ReadLine()*/"C:\\Users\\Keagan\\Desktop\\scripts\\stringtest.png";
+            string? filePath = Console.ReadLine();
 
             if (File.Exists(filePath))
             {
                 ScriptProcessor proc = new ScriptProcessor(filePath);
-                List<Colour> commands = proc.ProcessScript();
+                List<Colour> commands = new();
+
+                if (Path.GetExtension(filePath) == ".txt")
+                {
+                    commands = proc.ProcessScriptAsText();
+                }
+                else 
+                {
+                    commands = proc.ProcessScript();
+                }
+
                 commands.ToList().ForEach((c) => Console.WriteLine(c.colour));
                 Compiler comp = new Compiler(commands);
                 string code = comp.Compile();
