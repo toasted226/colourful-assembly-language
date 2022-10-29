@@ -68,6 +68,7 @@ namespace ColourfulAssembly
             int assignsFound = 0;
             int printsFound = 0;
             List<Colour> APPairs = new();
+            int startIndex = -1;
 
             //commands in string form, those that are part of a string will be removed
             List<string> strCommands = new();
@@ -85,6 +86,10 @@ namespace ColourfulAssembly
                         //add assign to pair
                         APPairs.Add(commands[i]);
                         assignsFound++;
+                        if (startIndex == -1) 
+                        {
+                            startIndex = strCommands.Count - 1;
+                        }
                     }
                     else if (printsFound < 2) //found pair either doesn't exist or isn't valid
                     {
@@ -92,20 +97,21 @@ namespace ColourfulAssembly
                         assignsFound = 0;
                         printsFound = 0;
                         APPairs.Clear();
+                        startIndex = -1;
                     }
                     else //found valid pair, process pair for string
                     {
                         bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
                         if (hasString)
                         {
-                            Console.WriteLine("yeet");
-                            strCommands.Insert(startingIndex, code);
-                            strCommands.RemoveRange(startingIndex + 1, matches);
+                            strCommands.Insert(startIndex + startingIndex, code);
+                            strCommands.RemoveRange(startIndex + startingIndex + 1, matches);
 
                             //clear current pair info
                             assignsFound = 0;
                             printsFound = 0;
                             APPairs.Clear();
+                            startIndex = -1;
 
                             Console.WriteLine("Found paired assignment and print registers:");
                             APPairs.ForEach((i) => Console.WriteLine(i.colour));
@@ -133,6 +139,7 @@ namespace ColourfulAssembly
                         assignsFound = 0;
                         printsFound = 0;
                         APPairs.Clear();
+                        startIndex = -1;
                     }
 
                     if (i == commands.Count - 1 && printsFound > 1)
@@ -140,13 +147,14 @@ namespace ColourfulAssembly
                         bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
                         if (hasString)
                         {
-                            strCommands.Insert(startingIndex, code);
-                            strCommands.RemoveRange(startingIndex + 1, matches);
+                            strCommands.Insert(startIndex + startingIndex, code);
+                            strCommands.RemoveRange(startIndex + startingIndex + 1, matches);
 
                             //clear current pair info
                             assignsFound = 0;
                             printsFound = 0;
                             APPairs.Clear();
+                            startIndex = -1;
 
                             Console.WriteLine("Found paired assignment and print registers:");
                             APPairs.ForEach((i) => Console.WriteLine(i.colour));
@@ -162,13 +170,14 @@ namespace ColourfulAssembly
                         bool hasString = TryParseAPPair(APPairs, out string code, out int startingIndex, out int matches);
                         if (hasString)
                         {
-                            strCommands.Insert(startingIndex, code);
-                            strCommands.RemoveRange(startingIndex + 1, matches);
+                            strCommands.Insert(startIndex + startingIndex, code);
+                            strCommands.RemoveRange(startIndex + startingIndex + 1, matches);
 
                             //clear current pair info
                             assignsFound = 0;
                             printsFound = 0;
                             APPairs.Clear();
+                            startIndex = -1;
 
                             Console.WriteLine("Found paired assignment and print registers:");
                             APPairs.ForEach((i) => Console.WriteLine(i.colour));
@@ -182,6 +191,7 @@ namespace ColourfulAssembly
                         assignsFound = 0;
                         printsFound = 0;
                         APPairs.Clear();
+                        startIndex = -1;
                     }
                 }
 
@@ -281,7 +291,6 @@ namespace ColourfulAssembly
 
             for (int i = 0; i < cols.Count; i++) 
             {
-                Console.WriteLine(cols[i].colour);
                 if (cols[i].R() == "FF")
                 {
                     chars.Add(Convert.ToChar(cols[i].BlueValue()));
@@ -299,6 +308,11 @@ namespace ColourfulAssembly
             return code;
         }
 
+
+        /// <summary>
+        /// Returns a UUID with the - characters removed to be suitable as a variable name.
+        /// </summary>
+        /// <returns></returns>
         public string GetUniqueVarName() 
         {
             string uuid = Guid.NewGuid().ToString();
@@ -371,6 +385,12 @@ namespace ColourfulAssembly
             return isRegister;
         }
 
+        /// <summary>
+        /// Returns values to be used as variable address / value.
+        /// If the CC parameter was specified, return the value from the following colour.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public int[] CheckInNext(Colour command) 
         {
             int g = command.GreenValue();
