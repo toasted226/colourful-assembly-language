@@ -12,16 +12,16 @@ The compiler reads commands from colour codes in the pixels of a .PNG image and 
 3. Loops
 4. Data storage in memory
 
-### Hexadecimal register system
-CASSEL features a three-way input system for calling registers to perform a certain function. The values in the Green and Blue channels are always automatically converted to int before use.
+### Hexadecimal opcode system
+CASSEL features a three-way input system for using opcodes to perform a certain function. The values in the Green and Blue channels are always automatically converted to int before use.
 | Channel | Argument |
 |--------|--------------|
-| Red | Chosen register |
+| Red | Chosen opcode |
 | Green | Variable address |
 | Blue | Argument value |
 
-### Registers
-| **Register** | **Method**  |
+### Opcodes
+| **Opcode** | **Method**  |
 |--------------|-------------|
 | **FF**       | Assignment  |
 | **FA**       | Addition    |
@@ -50,12 +50,12 @@ Example:
 #0001A4
 ```
 
-In the above example, the **FF** register is used in the Red channel to declare a variable. The **CC** in the Green channel specifies that the entire following colour code (0x539) will be used as a variable address. Because **CC** has been used in the Green channel already, **CC** in the Blue channel will now tell the compiler to use the second colour code specified (0x1A4) as a value to be set to the variable with the address specified in the Green channel.
+In the above example, the **FF** opcode is used in the Red channel to declare a variable. The **CC** in the Green channel specifies that the entire following colour code (0x539) will be used as a variable address. Because **CC** has been used in the Green channel already, **CC** in the Blue channel will now tell the compiler to use the second colour code specified (0x1A4) as a value to be set to the variable with the address specified in the Green channel.
 
 ## Documentation
-This section will cover the usage and arguments of all 7 registers in the language.
+This section will cover the usage and arguments of all 7 opcodes in the language.
 
-### Assignment Register - **FF**
+### Assignment Opcode - **FF**
 Declares a variable with a given address and an assigned integer value within the current scope.
 
 | **Red** | **Green** | **Blue** |
@@ -75,7 +75,7 @@ C++ (Generated)
 int v_1 = 12;
 ```
 
-### Addition Register - **FA**
+### Addition Opcode - **FA**
 Performs an addition operation on a variable with a given address using an assigned integer value.
 
 | **Red** | **Green** | **Blue** |
@@ -95,7 +95,7 @@ C++ (Generated)
 v_1 += 3;
 ```
 
-### Subtraction Register - **F0**
+### Subtraction Opcode - **F0**
 Performs a subtraction operation on a variable with a given address using an assigned integer value.
 
 | **Red** | **Green** | **Blue** |
@@ -115,7 +115,7 @@ C++ (Generated)
 v_15 -= 10;
 ```
 
-### Input Register - **CA**
+### Input Opcode - **CA**
 Gets single-character input from the user with stdio, converts the character to an integer from UTF-8 and stores the value in a variable.
 
 | **Red** | **Green** | **Blue** |
@@ -139,7 +139,7 @@ v_1 = int(v_xxxx);
 ```
 _xxxx is a placeholder for a compiler-generated UUID_
 
-### Output Register - **C0**
+### Output Opcode - **C0**
 Prints out a single character from an integer stored in a variable with a given address. The integer is converted into a UTF-8 character before being outputted to the console.
 
 | **Red** | **Green** | **Blue** |
@@ -160,8 +160,8 @@ int v_1 = 97;
 std::cout << char(v_1);
 ```
 
-### Loop Registers - **FE & CE**
-Begins a loop over the code between this register and the closing register. Loops the number of times specified by the value in the variable with the given variable address.
+### Loop Opcodes - **FE & CE**
+Begins a loop over the code between this opcode and the closing opcode. Loops the number of times specified by the value in the variable with the given variable address.
 
 | **Red** | **Green** | **Blue** |
 |-------|-------|-------|
@@ -284,12 +284,12 @@ Hello, world!
 This section will cover the preprocessing step in the compilation process. This information will help you write CASSEL code that generates cleaner and more efficient C++ code.
 
 ### String Optimisation
-CASSEL has a string optimisation feature in which assignment registers followed by output registers that have consecutive matching variable addresses instead generate a string variable in C++. This is to avoid repeatedly creating int variables and printing out their char conversions.
+CASSEL has a string optimisation feature in which assignment opcodes followed by output opcodes that have consecutive matching variable addresses instead generate a string variable in C++. This is to avoid repeatedly creating int variables and printing out their char conversions.
 
-For this to work, there must be at least 2 assignment registers followed by corresponding output registers. You can still have unrelated assignment or output registers before or after these string-optimised sections, they will be safely ignored as regular registers.
+For this to work, there must be at least 2 assignment opcodes followed by corresponding output opcodes. You can still have unrelated assignment or output opcodes before or after these string-optimised sections, they will be safely ignored as regular opcodes.
 
 Example:
-In the following example, you can see that there are 3 assignments followed by 3 outputs, each variable address in the assignment registers corresponding to addresses in the output registers. Refer to the [documentation](##Documentation) for more information on how the assignment and output registers work.
+In the following example, you can see that there are 3 assignments followed by 3 outputs, each variable address in the assignment opcodes corresponding to addresses in the output opcodes. Refer to the [documentation](##Documentation) for more information on how the assignment and output opcodes work.
 
 CASSEL (HTML Colour Code Translation)
 ```CASSEL
