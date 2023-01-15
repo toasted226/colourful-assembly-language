@@ -12,7 +12,7 @@ The compiler reads commands from colour codes in the pixels of a .PNG image and 
 3. Loops
 4. Data storage in memory
 
-### Hexadecimal opcode system
+### Hexadecimal Opcode System
 CASSEL features a three-way input system for using opcodes to perform a certain function. The values in the Green and Blue channels are always automatically converted to int before use.
 | Channel | Argument |
 |--------|--------------|
